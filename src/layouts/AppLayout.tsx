@@ -47,7 +47,7 @@ export default function AppLayout() {
               to={i.to}
               end={i.end}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 relative ${
+                `flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium transition-colors duration-150 relative ${
                   isActive
                     ? "bg-blue-600 text-white before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-blue-400 rounded-l-none"
                     : "text-gray-300 hover:bg-gray-700 hover:text-white"
@@ -71,8 +71,8 @@ export default function AppLayout() {
           className="absolute inset-0 bg-black bg-opacity-50"
           onClick={() => setOpen(false)}
         />
-        <aside className="relative w-64 h-full bg-slate-900 text-gray-200 flex flex-col shadow-lg">
-          <div className="h-16 px-4 flex items-center justify-between border-b border-gray-700">
+        <aside className="relative w-72 h-full bg-slate-900 text-gray-200 flex flex-col shadow-lg">
+          <div className="h-20 px-4 flex items-center justify-between border-b border-gray-700">
             <span className="font-bold text-blue-400 text-lg">OdontoFlow</span>
             <button
               onClick={() => setOpen(false)}
@@ -89,7 +89,7 @@ export default function AppLayout() {
                 end={i.end}
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ${
+                  `flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium transition-colors duration-150 ${
                     isActive
                       ? "bg-blue-600 text-white"
                       : "text-gray-300 hover:bg-gray-700 hover:text-white"

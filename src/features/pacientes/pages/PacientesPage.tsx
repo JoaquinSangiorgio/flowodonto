@@ -200,9 +200,13 @@ export default function PacientesPage() {
       <AnimatePresence>
         {showModal && (
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg p-8">
-              <h2 className="text-2xl font-black mb-6 text-slate-800">{editing ? "Editar Ficha" : "Nueva Ficha Médica"}</h2>
-              <PacienteForm initial={editing} onSubmit={handleSubmit} onCancel={() => { setEditing(null); setShowModal(false); }} />
+            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg flex flex-col max-h-[90dvh] overflow-hidden">
+              <div className="bg-white p-6 md:p-8 shrink-0 pb-2 md:pb-4 border-b border-slate-50 z-10 shadow-sm">
+                <h2 className="text-2xl font-black text-slate-800">{editing ? "Editar Ficha" : "Nueva Ficha Médica"}</h2>
+              </div>
+              <div className="flex-1 overflow-hidden bg-white">
+                <PacienteForm initial={editing} onSubmit={handleSubmit} onCancel={() => { setEditing(null); setShowModal(false); }} />
+              </div>
             </motion.div>
           </div>
         )}

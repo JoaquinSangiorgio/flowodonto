@@ -1,13 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { listStock, updateCantidad, deleteArticulo, type ArticuloStock } from "../services/stock.api";
+import { motion } from "framer-motion";
+import { 
+  listStock, 
+  updateProducto, 
+  deleteArticulo, 
+  createArticulo, 
+  type ArticuloStock 
+} from "../services/stock.api";
 import toast, { Toaster } from "react-hot-toast";
 import { Package, AlertTriangle, Plus, Minus, Search } from "lucide-react";
 import StockModal from "../components/StockModal";
 import ConfirmDialog from "../../../shared/components/ConfirmDialog"; 
-import { createArticulo } from "../services/stock.api"; 
 
 export default function StockPage() {
   const [items, setItems] = useState<ArticuloStock[]>([]);
@@ -33,25 +38,26 @@ export default function StockPage() {
 
   useEffect(() => { refresh(); }, []);
 
+  // ✅ CORREGIDO: Ahora envía un objeto con el campo cantidad
   const handleAdjust = async (id: string, current: number, diff: number) => {
     const nueva = current + diff;
     if (nueva < 0) return;
     try {
-      await updateCantidad(id, nueva);
-      setItems(prev => prev.map(item => item.id === id ? { ...item, cantidad: nueva } : item));
+      await updateProducto(id, { cantidad: nueva });
+      setItems(prev => prev.map(item => 
+        item.id === id ? { ...item, cantidad: nueva } : item
+      ));
       toast.success("Stock actualizado ✅");
     } catch {
       toast.error("No se pudo actualizar ❌");
     }
   };
 
-  // 🔥 Abrir el confirm en lugar de borrar directo
   const confirmDelete = (id: string) => {
     setItemToDelete(id);
     setIsConfirmOpen(true);
   };
 
-  // 🔥 Función que ejecuta la eliminación real
   const handleDelete = async () => {
     if (!itemToDelete) return;
     try {
@@ -66,10 +72,12 @@ export default function StockPage() {
     }
   };
 
+  // ✅ CORREGIDO: Ahora procesa el objeto completo para actualizar nombre, cat, etc.
   const handleSave = async (articuloData: ArticuloStock) => {
     try {
       if (editingItem?.id) {
-        await updateCantidad(editingItem.id, articuloData.cantidad);
+        // Al pasarle articuloData completo, updateProducto actualiza todos los campos
+        await updateProducto(editingItem.id, articuloData);
         toast.success("Insumo actualizado ✅");
       } else {
         await createArticulo(articuloData);
@@ -78,7 +86,7 @@ export default function StockPage() {
       
       setIsModalOpen(false);
       setEditingItem(null);
-      refresh();
+      refresh(); // Recargamos para ver los cambios de texto (nombre, categoria, unidad)
     } catch {
       toast.error("Error al procesar el insumo ❌");
     }
@@ -88,7 +96,11 @@ export default function StockPage() {
     item.nombre.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) return <div className="p-20 text-center font-bold text-slate-400 uppercase tracking-widest">Cargando almacén...</div>;
+  if (loading) return (
+    <div className="p-20 text-center font-bold text-slate-400 uppercase tracking-widest animate-pulse">
+      Cargando almacén de FlowOdonto...
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -101,7 +113,6 @@ export default function StockPage() {
         initialData={editingItem} 
       />
 
-      {/* 🔥 Componente de Confirmación */}
       <ConfirmDialog
         open={isConfirmOpen}
         onCancel={() => setIsConfirmOpen(false)}
@@ -146,7 +157,7 @@ export default function StockPage() {
 
       <main className="max-w-7xl mx-auto p-4 md:p-6 -mt-8">
         
-        {/* VISTA DESKTOP (TABLA) */}
+        {/* VISTA DESKTOP */}
         <div className="hidden md:block bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden">
           <table className="w-full text-left">
             <thead>
@@ -164,7 +175,9 @@ export default function StockPage() {
                   <motion.tr key={item.id} layout className={`group hover:bg-slate-50/50 transition-colors ${esBajo ? 'bg-red-50/30' : ''}`}>
                     <td className="px-8 py-4">
                       <div className="font-bold text-slate-700">{item.nombre}</div>
-                      <div className="text-[10px] bg-slate-100 text-slate-500 inline-block px-2 py-0.5 rounded-md font-bold uppercase mt-1">{item.categoria}</div>
+                      <div className="text-[10px] bg-slate-100 text-slate-500 inline-block px-2 py-0.5 rounded-md font-bold uppercase mt-1">
+                        {item.categoria} • {item.unidad}
+                      </div>
                     </td>
                     <td className="px-8 py-4">
                       <div className="flex items-center justify-center gap-3">
@@ -191,7 +204,7 @@ export default function StockPage() {
           </table>
         </div>
 
-        {/* VISTA MOBILE (CARDS) */}
+        {/* VISTA MOBILE */}
         <div className="md:hidden space-y-4">
           {filteredItems.map((item) => {
             const esBajo = item.cantidad <= item.minimo;

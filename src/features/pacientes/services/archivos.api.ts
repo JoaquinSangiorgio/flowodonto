@@ -1,4 +1,4 @@
-const API_URL = "https://sparkx.com.ar/api/archivos.php";
+const API_URL = import.meta.env.VITE_API_URL || "https://sparkx.com.ar/api/archivos.php";
 
 export interface Archivo {
   id?: number;

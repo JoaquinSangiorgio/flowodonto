@@ -101,11 +101,12 @@ export default function LoginPage() {
           </span>
         </button>
 
-        <div className="flex flex-col items-center space-y-4 pt-2">
-          <div className="h-px w-16 bg-slate-200"></div>
-          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-400">
-            © {new Date().getFullYear()} OdontoFlow System
+        
+         <div className="flex flex-col items-center space-y-2 pt-2">
+          <p className="text-[12px] font-medium uppercase tracking-[0.4em] text-slate-900">
+            Credenciales de prueba:
           </p>
+          <p> admin@prueba.com / adminpruebapuntocom</p>
         </div>
       </form>
     </div>
